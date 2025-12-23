@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axiosInstance from '../../../services/api/axios.config';
+import { toast } from 'react-hot-toast';
 
 const EditProfileModal = ({ onClose, user, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -56,6 +57,9 @@ const EditProfileModal = ({ onClose, user, onSuccess }) => {
             });
 
             console.log('Profile updated successfully:', response.data);
+
+            // Show success toast
+            toast.success('Cập nhật hồ sơ thành công!');
 
             if (onSuccess) {
                 onSuccess(response.data);

@@ -26,9 +26,9 @@ const Header = () => {
 
     const navigation = [
         { name: 'Home', href: '/' },
-        { name: 'Features', href: '#features' },
-        { name: 'Plans', href: '#plans' },
-        { name: 'Contact', href: '#contact' },
+        { name: 'Lịch tập', href: '/workout-plans' },
+        { name: 'Bài tập', href: '/exercises' },
+        { name: 'About', href: '/about' },
     ];
 
     const handleSignInSuccess = (response) => {

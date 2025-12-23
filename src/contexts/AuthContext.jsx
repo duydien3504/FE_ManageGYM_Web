@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
             console.log('AuthContext.login - RAW API Response:', response);
             console.log('AuthContext.login - response.user:', response.user);
+            console.log('AuthContext.login - response.role:', response.role);
             console.log('AuthContext.login - response.accessToken:', response.accessToken);
             console.log('AuthContext.login - response.access_token:', response.access_token);
             console.log('AuthContext.login - response.token:', response.token);
@@ -57,8 +58,14 @@ export const AuthProvider = ({ children }) => {
 
             // Extract user and token from response
             // API returns snake_case: access_token, not camelCase: accessToken
-            const userData = response.user || response.data?.user;
+            let userData = response.user || response.data?.user;
             const authToken = response.access_token || response.accessToken || response.token || response.data?.access_token || response.data?.accessToken;
+
+            // IMPORTANT: Backend returns role separately, merge it into user object
+            if (userData && response.role) {
+                userData = { ...userData, role: response.role };
+                console.log('AuthContext.login - Merged role into userData:', userData);
+            }
 
             console.log('AuthContext.login - Extracted userData:', userData);
             console.log('AuthContext.login - Extracted authToken:', authToken);
@@ -109,8 +116,13 @@ export const AuthProvider = ({ children }) => {
             setLoading(true);
             const response = await authService.register(userData);
 
-            const user = response.user || response.data?.user;
+            let user = response.user || response.data?.user;
             const authToken = response.access_token || response.accessToken || response.token || response.data?.access_token || response.data?.accessToken;
+
+            // Merge role if it's returned separately
+            if (user && response.role) {
+                user = { ...user, role: response.role };
+            }
 
             if (user) {
                 setUser(user);

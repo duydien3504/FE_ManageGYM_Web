@@ -6,4 +6,7 @@ export const ROUTES = {
     REGISTER: '/register',
     DASHBOARD: '/dashboard',
     PROFILE: '/profile',
+    WORKOUT_PLANS: '/workout-plans',
+    EXERCISES: '/exercises',
+    ADMIN: '/admin',
 };

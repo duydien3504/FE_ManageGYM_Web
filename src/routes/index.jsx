@@ -4,6 +4,8 @@ import MainLayout from '../layouts/MainLayout';
 import Home from '../pages/Home';
 import About from '../pages/About';
 import ProfilePage from '../pages/ProfilePage';
+import WorkoutPlans from '../pages/WorkoutPlans';
+import Exercises from '../pages/Exercises';
 import NotFound from '../pages/NotFound';
 import { ROUTES } from '../constants/routes';
 
@@ -14,6 +16,8 @@ const AppRoutes = () => {
                 <Route index element={<Home />} />
                 <Route path={ROUTES.ABOUT} element={<About />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path={ROUTES.WORKOUT_PLANS} element={<WorkoutPlans />} />
+                <Route path={ROUTES.EXERCISES} element={<Exercises />} />
                 <Route path="*" element={<NotFound />} />
             </Route>
         </Routes>
