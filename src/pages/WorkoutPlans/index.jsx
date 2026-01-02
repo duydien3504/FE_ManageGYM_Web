@@ -7,6 +7,7 @@ import WeeklyScheduleView from '../../components/workout/WeeklyScheduleView';
 import AddScheduleModal from '../../components/workout/AddScheduleModal';
 import ScheduleExerciseList from '../../components/workout/ScheduleExerciseList';
 import AddExerciseModal from '../../components/workout/AddExerciseModal';
+import LogWorkoutModal from '../../components/workout/LogWorkoutModal';
 
 const WorkoutPlans = () => {
    const navigate = useNavigate();
@@ -16,6 +17,7 @@ const WorkoutPlans = () => {
    const [showCreateModal, setShowCreateModal] = useState(false);
    const [showScheduleModal, setShowScheduleModal] = useState(false);
    const [showExerciseModal, setShowExerciseModal] = useState(false);
+   const [showLogWorkoutModal, setShowLogWorkoutModal] = useState(false);
    const [selectedDay, setSelectedDay] = useState(null);
    const [loading, setLoading] = useState(true);
 
@@ -91,6 +93,21 @@ const WorkoutPlans = () => {
       }
    };
 
+   const handleStartWorkout = () => {
+      if (selectedSchedule && selectedSchedule.exercises && selectedSchedule.exercises.length > 0) {
+         setShowLogWorkoutModal(true);
+      } else {
+         alert('Vui lòng thêm bài tập vào lịch trước khi bắt đầu tập');
+      }
+   };
+
+   const handleLogWorkoutSuccess = () => {
+      // Reload plan details to update any progress indicators
+      if (selectedPlan) {
+         loadPlanDetails(selectedPlan.plan_id);
+      }
+   };
+
    return (
       <div className="min-h-screen bg-moss-deep py-8">
          <div className="max-w-[1280px] mx-auto px-4 sm:px-10">
@@ -161,9 +178,20 @@ const WorkoutPlans = () => {
                   {/* Schedule Exercises */}
                   {selectedSchedule && (
                      <div className="p-6 rounded-2xl bg-moss-card border border-moss-border">
-                        <h3 className="text-xl font-bold text-moss-text mb-4">
-                           {selectedSchedule.title}
-                        </h3>
+                        <div className="flex items-center justify-between mb-4">
+                           <h3 className="text-xl font-bold text-moss-text">
+                              {selectedSchedule.title}
+                           </h3>
+                           {selectedSchedule.exercises && selectedSchedule.exercises.length > 0 && (
+                              <button
+                                 onClick={handleStartWorkout}
+                                 className="h-10 px-6 rounded-full bg-primary hover:bg-[#b8c755] text-moss-deep font-bold transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(201,216,98,0.2)] flex items-center gap-2"
+                              >
+                                 <span className="material-symbols-outlined !text-lg">play_circle</span>
+                                 <span>Bắt đầu tập</span>
+                              </button>
+                           )}
+                        </div>
                         <ScheduleExerciseList
                            exercises={selectedSchedule.exercises || []}
                            scheduleId={selectedSchedule.schedule_id}
@@ -230,6 +258,12 @@ const WorkoutPlans = () => {
             onClose={() => setShowExerciseModal(false)}
             scheduleId={selectedSchedule?.schedule_id}
             onSuccess={handleExerciseSuccess}
+         />
+         <LogWorkoutModal
+            isOpen={showLogWorkoutModal}
+            onClose={() => setShowLogWorkoutModal(false)}
+            schedule={selectedSchedule}
+            onSuccess={handleLogWorkoutSuccess}
          />
       </div>
    );

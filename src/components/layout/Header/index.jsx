@@ -29,6 +29,8 @@ const Header = () => {
         { name: 'Home', href: '/' },
         { name: 'Lịch tập', href: '/workout-plans' },
         { name: 'Bài tập', href: '/exercises' },
+        { name: 'Lịch sử', href: '/workout-history' },
+        { name: 'Thống kê', href: '/stats' },
         { name: 'About', href: '/about' },
     ];
 
