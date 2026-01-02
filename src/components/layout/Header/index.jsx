@@ -31,7 +31,6 @@ const Header = () => {
         { name: 'Bài tập', href: '/exercises' },
         { name: 'Lịch sử', href: '/workout-history' },
         { name: 'Thống kê', href: '/stats' },
-        { name: 'About', href: '/about' },
     ];
 
     const handleSignInSuccess = (response) => {

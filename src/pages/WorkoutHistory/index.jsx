@@ -23,6 +23,8 @@ const WorkoutHistory = () => {
         try {
             setLoading(true);
             const data = await getWorkoutHistory(selectedMonth, selectedYear);
+            console.log('Workout History API Response:', data);
+            console.log('First item:', data?.[0]);
             setHistory(data || []);
         } catch (error) {
             console.error('Error loading workout history:', error);
@@ -199,11 +201,11 @@ const WorkoutHistory = () => {
                                         <div className="flex gap-4 mt-3">
                                             <div className="flex items-center gap-1 text-sm text-moss-muted">
                                                 <span className="material-symbols-outlined !text-base">schedule</span>
-                                                <span>{item.duration_minutes || 0} phút</span>
+                                                <span>{item.duration_minutes || item.duration || item.durationMinutes || 0} phút</span>
                                             </div>
                                             <div className="flex items-center gap-1 text-sm text-moss-muted">
                                                 <span className="material-symbols-outlined !text-base">fitness_center</span>
-                                                <span>{item.exercise_count || 0} bài tập</span>
+                                                <span>{item.exercise_count || item.exerciseCount || item.total_exercises || item.exercises?.length || 0} bài tập</span>
                                             </div>
                                         </div>
                                     </div>

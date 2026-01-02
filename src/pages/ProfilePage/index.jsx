@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import EditProfileModal from '../../components/profile/EditProfileModal';
+import BodyMetricsModal from '../../components/profile/BodyMetricsModal';
 import { userService } from '../../services/api/user.service';
 
 const ProfilePage = () => {
     const { user, logout, updateUser } = useAuth();
     const navigate = useNavigate();
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isMetricsModalOpen, setIsMetricsModalOpen] = useState(false);
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -35,6 +37,20 @@ const ProfilePage = () => {
             }
         } catch (err) {
             console.error('Failed to refetch profile:', err);
+        }
+    };
+
+    const handleMetricsSuccess = async () => {
+        // Refetch profile data to get the latest metrics
+        try {
+            const response = await userService.getProfile();
+            const userData = response.user || response.data?.user || response;
+            if (userData && userData.email) {
+                setProfileData(userData);
+                updateUser(userData);
+            }
+        } catch (err) {
+            console.error('Failed to refetch profile after metrics update:', err);
         }
     };
 
@@ -165,6 +181,12 @@ const ProfilePage = () => {
                                 Edit Profile
                             </button>
                             <button
+                                onClick={() => setIsMetricsModalOpen(true)}
+                                className="px-6 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors"
+                            >
+                                Track Metrics
+                            </button>
+                            <button
                                 onClick={handleLogout}
                                 className="px-6 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-lg transition-colors"
                             >
@@ -223,26 +245,47 @@ const ProfilePage = () => {
                         </div>
                     </div>
 
-                    {/* Quick Stats */}
+                    {/* Body Metrics */}
                     <div className="bg-moss-card rounded-xl p-6 border border-moss-muted/10">
                         <h2 className="text-xl font-bold text-moss-text mb-6 flex items-center gap-2">
-                            <span className="material-symbols-outlined text-primary">bar_chart</span>
-                            Quick Stats
+                            <span className="material-symbols-outlined text-primary">monitor_weight</span>
+                            Body Metrics
                         </h2>
 
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
-                                <span className="text-moss-muted">Total Workouts</span>
-                                <span className="text-moss-text font-bold">0</span>
+                                <span className="text-moss-muted">Weight</span>
+                                <span className="text-moss-text font-bold">
+                                    {displayUser.metrics?.weight || displayUser.weight || '-'} kg
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-moss-muted">Active Plans</span>
-                                <span className="text-moss-text font-bold">0</span>
+                                <span className="text-moss-muted">Height</span>
+                                <span className="text-moss-text font-bold">
+                                    {displayUser.metrics?.height || displayUser.height || '-'} cm
+                                </span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-moss-muted">Streak Days</span>
-                                <span className="text-moss-text font-bold">0</span>
+                                <span className="text-moss-muted">Body Fat</span>
+                                <span className="text-moss-text font-bold">
+                                    {displayUser.metrics?.body_fat_percentage || displayUser.body_fat_percentage || '-'}
+                                    {(displayUser.metrics?.body_fat_percentage || displayUser.body_fat_percentage) && '%'}
+                                </span>
                             </div>
+                            {(displayUser.metrics?.weight || displayUser.weight) && (displayUser.metrics?.height || displayUser.height) && (
+                                <div className="flex justify-between items-center pt-2 border-t border-moss-muted/10">
+                                    <span className="text-moss-muted">BMI</span>
+                                    <span className="text-primary font-bold">
+                                        {(() => {
+                                            const weight = displayUser.metrics?.weight || displayUser.weight;
+                                            const height = displayUser.metrics?.height || displayUser.height;
+                                            const heightInMeters = height / 100;
+                                            const bmi = weight / (heightInMeters * heightInMeters);
+                                            return bmi.toFixed(1);
+                                        })()}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -267,6 +310,14 @@ const ProfilePage = () => {
                     onClose={() => setIsEditModalOpen(false)}
                     user={displayUser}
                     onSuccess={handleEditSuccess}
+                />
+            )}
+
+            {/* Body Metrics Modal */}
+            {isMetricsModalOpen && (
+                <BodyMetricsModal
+                    onClose={() => setIsMetricsModalOpen(false)}
+                    onSuccess={handleMetricsSuccess}
                 />
             )}
         </div>
