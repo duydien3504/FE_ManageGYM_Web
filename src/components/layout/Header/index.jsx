@@ -6,6 +6,7 @@ import SignUpModal from '../../auth/SignUpModal';
 import ForgotPasswordModal from '../../auth/ForgotPasswordModal';
 import OTPVerificationModal from '../../auth/OTPVerificationModal';
 import { useAuth } from '../../../contexts/AuthContext';
+import { isAdmin } from '../../../utils/authHelpers';
 
 const Header = () => {
     const [isSignInOpen, setIsSignInOpen] = useState(false);
@@ -90,17 +91,27 @@ const Header = () => {
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-8">
                         {navigation.map((item, index) => (
-                            <a
+                            <Link
                                 key={item.name}
-                                href={item.href}
+                                to={item.href}
                                 className={`text-sm font-medium transition-colors ${index === 0
                                     ? 'text-moss-text hover:text-primary'
                                     : 'text-moss-muted hover:text-primary'
                                     }`}
                             >
                                 {item.name}
-                            </a>
+                            </Link>
                         ))}
+                        {/* Admin Link - Only show for admin users */}
+                        {isAuthenticated && isAdmin(user) && (
+                            <Link
+                                to="/admin"
+                                className="text-sm font-medium text-primary hover:text-[#b8c755] transition-colors flex items-center gap-1"
+                            >
+                                <span className="material-symbols-outlined !text-lg">admin_panel_settings</span>
+                                Admin
+                            </Link>
+                        )}
                     </nav>
 
                     {/* Auth Buttons / User Menu */}

@@ -6,6 +6,7 @@ import About from '../pages/About';
 import ProfilePage from '../pages/ProfilePage';
 import WorkoutPlans from '../pages/WorkoutPlans';
 import Exercises from '../pages/Exercises';
+import AdminPanel from '../pages/AdminPanel';
 import NotFound from '../pages/NotFound';
 import { ROUTES } from '../constants/routes';
 
@@ -18,6 +19,7 @@ const AppRoutes = () => {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path={ROUTES.WORKOUT_PLANS} element={<WorkoutPlans />} />
                 <Route path={ROUTES.EXERCISES} element={<Exercises />} />
+                <Route path={ROUTES.ADMIN} element={<AdminPanel />} />
                 <Route path="*" element={<NotFound />} />
             </Route>
         </Routes>

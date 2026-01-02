@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
+import { isAdmin } from '../../../utils/authHelpers';
 
 const SignInModal = ({ onClose, onSuccess, onSwitchToSignUp, onSwitchToForgotPassword }) => {
     const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ const SignInModal = ({ onClose, onSuccess, onSwitchToSignUp, onSwitchToForgotPas
     const [error, setError] = useState('');
 
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -28,6 +31,13 @@ const SignInModal = ({ onClose, onSuccess, onSwitchToSignUp, onSwitchToForgotPas
             const response = await login(formData);
 
             console.log('SignInModal - Login successful:', response);
+
+            // Check if user is admin and redirect to admin panel
+            const userData = response.user || response.data?.user;
+            if (userData && isAdmin(userData)) {
+                console.log('SignInModal - Admin user detected, redirecting to /admin');
+                navigate('/admin');
+            }
 
             // Call success callback
             if (onSuccess) {
