@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { authService } from '../../../services/api/auth.service';
 
 const SignUpModal = ({ onClose, onSuccess, onSwitchToSignIn }) => {
@@ -26,16 +27,20 @@ const SignUpModal = ({ onClose, onSuccess, onSwitchToSignIn }) => {
         try {
             const response = await authService.register(formData);
 
+            // Show success toast
+            toast.success('Đăng ký thành công! Vui lòng đăng nhập.', {
+                duration: 3000,
+            });
+
             // Call success callback
             if (onSuccess) {
                 onSuccess(response);
             }
 
-            // Close modal
-            onClose();
-
-            // Reload page to update auth state
-            window.location.reload();
+            // Switch to login modal after a short delay
+            setTimeout(() => {
+                onSwitchToSignIn();
+            }, 500);
         } catch (err) {
             setError(err.message || 'Registration failed. Please try again.');
         } finally {
